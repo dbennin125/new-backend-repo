@@ -99,12 +99,29 @@ app.put('/exercises/:id', async(req, res) => {
   }
 });
 
-app.get('/exercises/:id', async(req, res) => {
-  const data = await client.query(`delet exercises.name,exercises.weight, 
-  exercises.is_fullbody, type from exercises join types on exercises.type_id= types.id`);
-  //gets all data from DB
-  res.json(data.rows);
+//delete by ID (with ID by req.body.id) on the details page. 
+app.delete('/exercises/:id', async(req, res) => {
+  // console.log('=============================\n');
+  // console.log('|| req.body', req.body);
+  // console.log('\n=============================');
+  try {
+    //works in postman locally
+    const id = req.body.id;
+    const data = await client.query(`
+    delete from exercises 
+    where id = $1
+    returning *;`, [id]
+    //can't use muliple commands into prepared statement aka you can't combine sql questions/querries, just i just did one. 
+    
+    );
+   
+    res.json(data.rows[0]);
+  } catch(e) {
+    console.error(e);
+    res.json(e);
+  }
 });
+
 
 
 app.listen(PORT, () => {
