@@ -10,7 +10,8 @@ const app = require('./lib/app');
 const PORT = process.env.PORT || 7890;
 //get lists of exercises
 app.get('/exercises', async(req, res) => {
-  const data = await client.query('SELECT * from exercises');
+  const data = await client.query(`select exercises.name,exercises.weight, 
+  exercises.is_fullbody, type from exercises join types on exercises.type_id= types.id`);
   //gets all data from DB
   res.json(data.rows);
 });
@@ -19,7 +20,11 @@ app.get('/exercises', async(req, res) => {
 app.get('/exercises/:id', async(req, res) => {
   try {
     const id = req.params.id;
-    const data = await client.query('SELECT * from exercises WHERE id=$1', [id]);
+    const data = await client.query(`select exercises.name, exercises.weight, exercises.is_fullbody, type
+    from exercises
+    join types 
+    on exercises.type_id= types.id 
+    where exercises.id=$1`, [id]);
     // console.log(data.row);
     res.json(data.rows[0]);
   } catch(e) {
@@ -28,31 +33,21 @@ app.get('/exercises/:id', async(req, res) => {
   }
 });
 //get an exercise by it's name
-app.get('/exercisebyname/:name', async(req, res) => {
-  try {
-    const name = `%${req.params.name}%`;
-    // console.log(name);
-    const data = await client.query('SELECT * from exercises where name ilike $1;', [name]);
-    // console.log(data.row);
-    res.json(data.rows);
-  } catch(e) {
-    console.error(e);
-    res.json(e);
-  }
-});
+// app.get('/exercisebyname/:name', async(req, res) => {
+//   try {
+//     const name = `%${req.params.name}%`;
+//     // console.log(name);
+//     const data = await client.query('SELECT * from exercises where name ilike $1;', [name]);
+//     // console.log(data.row);
+//     res.json(data.rows);
+//   } catch(e) {
+//     console.error(e);
+//     res.json(e);
+//   }
+// });
 
-//set new name in exercise DB 
-app.put('/exercises/:id', async(req, res) => {
-  try {
-    const id = req.params.id;
-    const data = await client.query('SELECT * from exercises WHERE id=$1', [id]);
-    // console.log(data.row);
-    res.json(data.rows[0]);
-  } catch(e) {
-    console.error(e);
-    res.json(e);
-  }
-});
+
+
 
 app.post('/exercises/', async(req, res) => {
   // console.log('=============================\n');
@@ -74,6 +69,29 @@ app.post('/exercises/', async(req, res) => {
   }
 });
 
+//update name (with ID) on the details page. 
+app.put('/exercises/:id', async(req, res) => {
+  // console.log('=============================\n');
+  // console.log('|| req.body', req.body);
+  // console.log('\n=============================');
+  try {
+
+    const id = req.body.id;
+    const data = await client.query(`
+    update exercises
+    set name = $1
+    where id = $2
+    returning *;`, [req.body.name, id]
+    //can't use muliple commands into prepared statement aka you can't combine sql questions/querries, just i just did one. 
+    
+    );
+    // console.log(data.row);
+    res.json(data.rows[0]);
+  } catch(e) {
+    console.error(e);
+    res.json(e);
+  }
+});
 
 
 app.listen(PORT, () => {
