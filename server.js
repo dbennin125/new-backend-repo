@@ -75,12 +75,12 @@ app.post('/exercises/', async(req, res) => {
 });
 
 //update name (with ID) on the details page. 
-app.put('/exercise/:id', async(req, res) => {
+app.put('/exercises/:id', async(req, res) => {
   // console.log('=============================\n');
   // console.log('|| req.body', req.body);
   // console.log('\n=============================');
   try {
-
+    //works in postman locally.
     const id = req.body.id;
     const data = await client.query(`
     update exercises
@@ -99,7 +99,7 @@ app.put('/exercise/:id', async(req, res) => {
 });
 
 //delete by ID (with ID by req.body.id) on the details page. 
-app.delete('/exercise/:id', async(req, res) => {
+app.delete('/exercises/:id', async(req, res) => {
   // console.log('=============================\n');
   // console.log('|| req.body', req.body);
   // console.log('\n=============================');
