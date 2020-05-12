@@ -65,7 +65,7 @@ app.post('/exercises/', async(req, res) => {
     values ($1, $2, $3, $4, $5)
     returning *;`,
     //had to hardcode user as 1 due to fail on heroku's side
-    [req.body.name, req.body.weight, req.body.is_fullbody, req.body.type_id, 1]
+    [req.body.name, req.body.weight, req.body.is_fullbody, 1, 1]
     );
     // console.log(data.row);
     res.json(data.rows[0]);
