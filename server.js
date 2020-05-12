@@ -10,7 +10,7 @@ const app = require('./lib/app');
 const PORT = process.env.PORT || 7890;
 //get lists of exercises
 app.get('/exercises', async(req, res) => {
-  const data = await client.query(`select exercises.name,exercises.weight, 
+  const data = await client.query(`select exercises.id, exercises.name,exercises.weight, 
   exercises.is_fullbody, type from exercises join types on exercises.type_id= types.id`);
   //gets all data from DB
   res.json(data.rows);
@@ -26,7 +26,7 @@ app.get('/types', async(req, res) => {
 app.get('/exercises/:id', async(req, res) => {
   try {
     const id = req.params.id;
-    const data = await client.query(`select exercises.name, exercises.weight, exercises.is_fullbody, type
+    const data = await client.query(`select exercises.id, exercises.name, exercises.weight, exercises.is_fullbody, type
     from exercises join types 
     on exercises.type_id= types.id 
     where exercises.id= $1`, [id]);
