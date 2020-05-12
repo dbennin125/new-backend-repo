@@ -26,8 +26,11 @@ app.get('/types', async(req, res) => {
 app.get('/exercises/:id', async(req, res) => {
   try {
     const id = req.params.id;
-    const data = await client.query(`select * from exercises
-    WHERE id =$1 `, [id]);
+    const data = await client.query(`select exercises.name, exercises.weight, exercises.is_fullbody, type
+    from exercises
+    join types 
+    on exercises.type_id= types.id 
+    where exercises.id= $1`, [id]);
     // console.log(data.row);
     res.json(data.rows[0]);
   } catch(e) {
@@ -73,7 +76,7 @@ app.post('/exercises/', async(req, res) => {
 });
 
 //update name (with ID) on the details page. 
-app.put('/exercises/:id', async(req, res) => {
+app.put('/exercise/:id', async(req, res) => {
   // console.log('=============================\n');
   // console.log('|| req.body', req.body);
   // console.log('\n=============================');
@@ -97,7 +100,7 @@ app.put('/exercises/:id', async(req, res) => {
 });
 
 //delete by ID (with ID by req.body.id) on the details page. 
-app.delete('/exercises/:id', async(req, res) => {
+app.delete('/exercise/:id', async(req, res) => {
   // console.log('=============================\n');
   // console.log('|| req.body', req.body);
   // console.log('\n=============================');
