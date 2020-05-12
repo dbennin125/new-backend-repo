@@ -16,6 +16,12 @@ app.get('/exercises', async(req, res) => {
   res.json(data.rows);
 });
 
+app.get('/types', async(req, res) => {
+  const data = await client.query('select * from types');
+  //gets all data from DB
+  res.json(data.rows);
+});
+
 //get just one specific exercise by ID
 app.get('/exercises/:id', async(req, res) => {
   try {
