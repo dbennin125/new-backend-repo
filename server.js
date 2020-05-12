@@ -61,11 +61,11 @@ app.post('/exercises/', async(req, res) => {
   // console.log('\n=============================');
   try {
     
-    const data = await client.query(`insert into exercises (name, weight, is_fullbody, type, user_id)
+    const data = await client.query(`insert into exercises (name, weight, is_fullbody, type_id, user_id)
     values ($1, $2, $3, $4, $5)
     returning *;`,
     //had to hardcode user as 1 due to fail on heroku's side
-    [req.body.name, req.body.weight, req.body.is_fullbody, req.body.type, 1]
+    [req.body.name, req.body.weight, req.body.is_fullbody, req.body.type_id, 1]
     );
     // console.log(data.row);
     res.json(data.rows[0]);
@@ -97,6 +97,13 @@ app.put('/exercises/:id', async(req, res) => {
     console.error(e);
     res.json(e);
   }
+});
+
+app.get('/exercises/:id', async(req, res) => {
+  const data = await client.query(`delet exercises.name,exercises.weight, 
+  exercises.is_fullbody, type from exercises join types on exercises.type_id= types.id`);
+  //gets all data from DB
+  res.json(data.rows);
 });
 
 
